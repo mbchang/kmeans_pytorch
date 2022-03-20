@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-# from kmeans_pytorch.pairwise import pairwise_distance
+from kmeans_pytorch.pairwise import pairwise_distance
 
 def forgy(X, n_clusters):
 	_len = len(X)
@@ -9,18 +9,20 @@ def forgy(X, n_clusters):
 	return initial_state
 
 
-def lloyd(X, k, metric, tol=1e-4):
+def lloyd(X, n_clusters, device=0, tol=1e-4):
+	X = torch.from_numpy(X).float().cuda(device)
 
-	initial_state = forgy(X, k)
+	initial_state = forgy(X, n_clusters)
+
 
 	while True:
-		dis = metric(X, initial_state)
+		dis = pairwise_distance(X, initial_state)
 
 		choice_cluster = torch.argmin(dis, dim=1)
 
 		initial_state_pre = initial_state.clone()
 
-		for index in range(k):
+		for index in range(n_clusters):
 			selected = torch.nonzero(choice_cluster==index).squeeze()
 
 			selected = torch.index_select(X, 0, selected)
@@ -32,4 +34,4 @@ def lloyd(X, k, metric, tol=1e-4):
 		if center_shift ** 2 < tol:
 			break
 
-	return choice_cluster, initial_state
+	return choice_cluster.cpu().numpy(), initial_state.cpu().numpy()
