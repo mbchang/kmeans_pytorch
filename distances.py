@@ -2,7 +2,10 @@ import einops as eo
 
 import torch
 
-def cosine(data1, data2):
+def cosine(data1, data2=None):
+    if data2 is None:
+        data2 = data1
+
     # N*1*M
     A = data1.unsqueeze(dim=1)
 
