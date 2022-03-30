@@ -18,7 +18,7 @@ def cosine(data1, data2=None):
 
     cosine = A_normalized * B_normalized
 
-    # return N*N matrix for pairwise distance
+    # return N*M matrix for pairwise distance
     cosine_dis = 1 - cosine.sum(dim=-1).squeeze()
     return cosine_dis
 
@@ -39,7 +39,7 @@ def euclidean(data1, data2=None):
 	B = data2.unsqueeze(dim=0)
 
 	dis = (A-B)**2.0
-	#return N*N matrix for pairwise distance
+	#return N*M matrix for pairwise distance
 	dis = dis.sum(dim=-1).squeeze()
 	return dis
 
